@@ -15,10 +15,22 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+This program can be used to monitor messages from, and send commands to, a
+Kenwood TM-D700a or similar radio.
+
+Usage: python control.py {device file} {';' seperated command(s)}"
+EG: python control.py /dev/ttyUSB0 'PS 1;PS 1;BUF 0'"
+Windows: python control.py com1 'PS 1;PS 1;BUF 0'"
+
+When the program runs it immediately sends any commands. It then enters a loop
+receiving and printing any and all messages from the radio.
+"""
+
 import gevent
 import gevent.monkey
 gevent.monkey.patch_all()
-gevent.monkey.patch_sys()
+#gevent.monkey.patch_sys()
 from gevent.queue import Queue, Empty
 
 import serial
@@ -113,16 +125,16 @@ def print_lines(rig):
         line = rig.rxlines.get()
         print datetime.utcnow().isoformat(), line
 
-def send_cmd(rig):
-    while True:
-        cmd = raw_input()
-        rig.sendline(cmd)
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    rig = Rig(argv[1])
+    if len(argv) > 2:
+        for cmd in argv[2].split(';'):
+            rig.sendline(cmd)
+    gevent.spawn(print_lines, rig).join()
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    rig = Rig(sys.argv.pop())
-    gevent.spawn(print_lines, rig)
-    gevent.spawn(send_cmd, rig)
-    while True:
-        gevent.sleep(1)
-        readline.redisplay()
+    main()
+
