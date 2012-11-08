@@ -3,6 +3,11 @@ pytmd700
 
 Python control lib for Kenwood TM-D700a and similar radios.
 
+Requirements:
+* Python 2.7 
+* gevent
+* pyserial
+
 control.py: Core radio comms framework built on gevent for performance. Also
             useful for sending commands to radio and monitoring it's status.
 
