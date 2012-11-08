@@ -104,9 +104,14 @@ def program(rec, rig, chan):
     riglock.acquire()
     rig.sendline(cmd)
     resp = rig.rxlines.get(timeout=1)
-    riglock.release()
     if resp != 'MW':
         raise Exception("Expected %s but got %s" % (repr(cmd), repr(resp)))
+    cmd = "MNA 0,%03d,%s" % (chan, rec['Location'][:8])
+    rig.sendline(cmd)
+    resp = rig.rxlines.get(timeout=1)
+    if not resp.startswith('MNA'):
+        raise Exception("Expected %s but got %s" % (repr(cmd), repr(resp)))
+    riglock.release()
 
 rig = control.Rig(TTYDEV)
 rig.sendline('PS 1')

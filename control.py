@@ -43,6 +43,11 @@ import sys
 log = logging.getLogger('control')
 log.setLevel(logging.WARNING)
 
+class VFO(object):
+    def __init__(self):
+        self.busy = None
+        self.chan_num = None
+
 class Rig(object):
     def __init__(self, device):
         self.txlines = Queue()
@@ -50,6 +55,9 @@ class Rig(object):
         self.tty = serial.Serial(device, 9600, timeout=1)
         gevent.spawn(self.receiver)
         gevent.spawn(self.sender)
+        self.vfos = (VFO(), VFO())
+        self.con_vfo = None
+        self.tx_vfo = None
 
     def receiver(self):
         rxbuf = []
