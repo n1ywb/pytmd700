@@ -84,11 +84,11 @@ def main(win=None, argv=None):
     dev = argv[1]
     win = curses.newwin(WINSIZE['height'], WINSIZE['width'], 0, 0)
     rig = control.Rig(dev)
-    for n in xrange(5):
-        rig.sendline('PS 1'); rig.rxlines.get()
+    for n in xrange(10):
+        rig.sendline('PS 1')
     while True:
         try:
-            rig.rxlines.get(block=False)
+            rig.rxlines.get(timeout=0.5)
         except gevent.queue.Empty:
             break
     rig.sendline('AI 1'); rig.rxlines.get()
