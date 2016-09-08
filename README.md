@@ -1,7 +1,10 @@
 pytmd700
 ========
 
-Application and library for use with the Kenwood TM-D700a (and others?)
+Applications and library for use with the Kenwood TM-D700a (and others?)
+
+![screenshot](https://github.com/n1ywb/pytmd700/blob/master/screenshot.png?raw=true)
+
 
 Description
 -----------
